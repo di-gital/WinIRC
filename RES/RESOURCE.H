@@ -1,0 +1,62 @@
+#ifndef _RESOURCE
+#define _RESOURCE
+
+#define IDR_MAINMENU 0x001
+#define IDR_FILE_EXIT 0x101
+#define IDR_FIND 0x201
+#define IDR_OVERVIEW 0x301
+#define ID_SETTINGS_CONFIG 0x501
+#define IDR_WINIRC_LOG 0x601
+
+#define IDD_ABOUT 901
+#define ID_HELP_ABOUT 40002
+
+/* Options dialog */
+#define CONFIG_WIDTH  200
+#define CONFIG_HEIGHT 125
+#define OPTION_MARGIN 5
+#define OPTION_RIGHT 64
+
+#define IDD_CONFIG 0x2000
+#define ID_CONFIG_CANCEL 0x2001
+#define ID_CONFIG_SAVE 0x2002
+#define ID_HOSTNAME 0x2003
+#define ID_PORT 0x2004
+#define ID_CHANNELS 0x2005
+#define ID_KEEPLOGS 0x2006
+#define ID_LOGFILE 0x2007
+#define ID_LOG_SELECT 0x2008
+#define ID_LOG_FILE 0x2009
+#define ID_USERDB_SELECT 0x2009
+#define ID_USERDB_FILE 0x200A
+#define ID_HOSTNAME_L 0x200B
+#define ID_PORT_L 0x200C
+#define ID_CHANNELS_L 0x200D
+#define ID_LOGFILE_L 0x200E
+#define ID_USERDB_L	0x200F
+#define ID_OPTIONGROUP 0x2010
+
+/* Log dialog */
+#define IDD_WINIRC_LOG 0x3000
+#define ID_WINIRC_LOG_TEXT 0x3001
+#define ID_LOG_VSCROLLBAR 0x3002
+
+/* User edit dialog */
+#define IDD_USEREDIT 0x3100
+#define ID_USEREDIT_RESET 0x3201
+#define ID_USEREDIT_CANCEL 0x3102
+#define ID_USEREDIT_SAVE 0x3103
+#define ID_USEREDIT_NICK 0x3104
+#define ID_USEREDIT_RNAME 0x3105
+
+/* Channel edit dialog */
+#define IDD_CHANEDIT 0x3200
+#define ID_CHANEDIT_NAME 0x3201
+#define ID_CHANEDIT_TOPIC 0x3202
+#define ID_CHANEDIT_CANCEL 0x3203
+#define ID_CHANEDIT_SAVE 0x3204
+
+
+
+
+#endif 
