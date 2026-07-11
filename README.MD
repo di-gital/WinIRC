@@ -1,5 +1,5 @@
-* WinIRC
-** Description
+# WinIRC
+## Description
 **WinIRC** is a trivial IRC server created as a exercise to learn
 the Windows API. The entire application, besides the Visual Studio
 project file, is hand-written C and Resource Configuration. This 
@@ -14,12 +14,12 @@ Functions besides the very minimum for clients to join channels and
 send messages within those channels. Moreover, it does not support
 moderation or persistence to any degree.
 
-** Use
+## Use
 Binaries for this program are located under `build/`. WinIRC
 expects a `winirc.ini` file located in the same directory as the
 executable. 
 
-** Compatiblity
+## Compatiblity
 WinIRC is intended to be compatible with all environments supporting
 a standard Win32 runtime with WinSock support. That is, all versions
 of Windows NT, Windows 95/98/Me, and WINE. The program has **not**
@@ -33,5 +33,5 @@ serves as a demonstration of the forwards-compatibility of the
 Windows API, working on systems developed between 1993 and the
 present day.
 
-** License
+## License
 BSD 2-clause (FreeBSD license)
