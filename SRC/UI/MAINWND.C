@@ -24,14 +24,13 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 		case WM_DESTROY:
 			PostQuitMessage(0);
 			return 0;
-		case WM_CTLCOLORSTATIC:
-			 SetTextColor((HDC) wParam, GetSysColor(COLOR_WINDOWTEXT));
-			 SetBkColor((HDC) wParam, GetSysColor(COLOR_BTNFACE));
-			 return (LRESULT) CreateSolidBrush(GetSysColor(COLOR_BTNFACE));
 		case WM_SOCKALERT: 
 			return servProc(hWnd, uMsg, wParam, lParam);
 		case WM_CLIENTALERT:
 			return clientProc(hWnd, uMsg, wParam, lParam);
+		case WM_CTLCOLORSTATIC:
+		case WM_CTLCOLORBTN:
+			return setBkProc(wParam);
 		case WM_COMMAND:
 			switch (LOWORD(wParam)) {								
 				case IDR_FILE_EXIT:
@@ -44,6 +43,10 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam) {
 				case ID_SETTINGS_CONFIG:
 					DialogBox(App.hInstance, MAKEINTRESOURCE(IDD_CONFIG),
 						  App.hWnd, configProc);
+					return 0;
+				case ID_HELP_LICENSE:
+					DialogBox(App.hInstance, MAKEINTRESOURCE(IDD_LICENSE),
+							  App.hWnd, licenseProc);
 					return 0;
 				case IDR_WINIRC_LOG:
 					DialogBox(App.hInstance, MAKEINTRESOURCE(IDD_WINIRC_LOG),

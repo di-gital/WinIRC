@@ -2,11 +2,9 @@
 
 #include "winirc.h"
 #include "app.h"
-#include "config.h"
 #include "ui.h"
 
 Application App;
-AppConfig Config;
 
 static int messageLoop() {
 	MSG msg;
@@ -45,13 +43,9 @@ int WINAPI WinMain(HINSTANCE hInstance, HINSTANCE hPrevInstance,
 	if(!loadConf(TEXT(".\\winirc.ini"))) {
 		loadDefaultConf();
 		MessageBox(App.hWnd, "WinIRC failed to load configuration file." 	
-	 						 " Using defaults.", "WinIRC", MB_OK);
+	 						 " Using defaults.", "WinIRC", MB_ICONINFORMATION);
 	}
 
-	if(initServer()) {
-		
-	} else {
-	}	
-
+	initServer();
 	return messageLoop();
 }

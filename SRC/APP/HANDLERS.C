@@ -45,6 +45,7 @@ int isRegistered(IrcUser *user) {
 }
 
 int registered(IrcUser *user) {
+	static char userStr[16];
 	char code[3];
 
 	if(isRegistered(user)) return FALSE;
@@ -61,8 +62,15 @@ int registered(IrcUser *user) {
 	strcat(output, " :Welcome to WinIRC! \r\n");
 
 	send(user->sock, output, strlen(output), 0);
+
+	/* Send messages to appropiate windows */
+	ZeroMemory(userStr, 16*sizeof(char));
 	SendMessage(App.layout.userList, LB_ADDSTRING, 
-		(WPARAM) 0, (LPARAM) (LPCTSTR) &(user->username)); 
+		(WPARAM) 0, (LPARAM) (LPCTSTR) &(user->username));
+	sprintf(userStr, "Users (%d)", ++(App.nUsers));
+	SendMessage(App.layout.userLabel, WM_SETTEXT, 
+				(WPARAM) 0, (LPARAM) userStr); 	
+	 
 	return TRUE;
 }	
 
@@ -158,6 +166,7 @@ int handlePrivMsg(IrcMsg *msg) {
 
 /* Insert a channel in the front of the channels list */
 int insertChannel(char *name) {
+	static char chanStr[16];
 	IrcChannel *newChan = calloc(1, sizeof(IrcChannel));
 	if(!newChan) return FALSE;
 
@@ -167,6 +176,11 @@ int insertChannel(char *name) {
 	App.nChannels++;
 	SendMessage(App.layout.channelList, LB_ADDSTRING, 
 		(WPARAM) 0, (LPARAM) name);
+
+	ZeroMemory(chanStr, 16*sizeof(char));
+	sprintf(chanStr, "Channels (%d)", App.nChannels);
+	SendMessage(App.layout.channelLabel, WM_SETTEXT,
+			    (WPARAM) 0, (LPARAM) chanStr);
 	return TRUE;
 }
 

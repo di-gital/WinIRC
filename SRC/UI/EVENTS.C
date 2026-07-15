@@ -2,16 +2,18 @@
 
 #include "winirc.h"
 #include "app.h"
-#include "config.h"
 #include "resource.h"
-#include "ui.h"
 
 extern Application App;
-extern AppConfig Config;
 
 BOOL CALLBACK SetFontProc(HWND hWnd, LPARAM lParam) {
 	SendMessage(hWnd, WM_SETFONT, (WPARAM) App.fonts.msSans8, TRUE);
 	return TRUE;
+}
+
+LRESULT CALLBACK setBkProc(WPARAM wParam) {
+	SetBkColor((HDC) wParam, GetSysColor(COLOR_BTNFACE));
+	return (LRESULT) CreateSolidBrush(GetSysColor(COLOR_BTNFACE));	
 }
 
 BOOL CALLBACK aboutProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
@@ -19,8 +21,11 @@ BOOL CALLBACK aboutProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		case WM_INITDIALOG:
 			EnumChildWindows(hWnd, SetFontProc, (WPARAM) App.fonts.msSans8);
 			UpdateWindow(hWnd);
-
 			return FALSE;
+		case WM_CTLCOLORDLG:
+		case WM_CTLCOLORBTN:
+		case WM_CTLCOLORSTATIC:
+			return setBkProc(wParam);
 		case WM_COMMAND:
 			switch (LOWORD(wParam)) {
 				case IDOK:
@@ -42,21 +47,22 @@ BOOL CALLBACK configProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		case WM_INITDIALOG:
 			/* Fill in with values of AppConfig Config */
 			EnumChildWindows(hWnd, SetFontProc, (LPARAM) App.fonts.msSans8);
-			SetDlgItemText(hWnd, ID_HOSTNAME, Config.hostname);
-			SetDlgItemInt(hWnd, ID_PORT, Config.port, FALSE);
-			SetDlgItemInt(hWnd, ID_CHANNELS, Config.maxChannels, TRUE);
-			SetDlgItemText(hWnd, ID_LOG_FILE, Config.logFile);
-			SetDlgItemText(hWnd, ID_USERDB_SELECT, Config.profileDb);
-								   
+			SetDlgItemText(hWnd, ID_HOSTNAME, App.config.hostname);
+			SetDlgItemInt(hWnd, ID_PORT, App.config.port, FALSE);
+			SetDlgItemInt(hWnd, ID_CHANNELS, App.config.maxChannels, TRUE);
+			SetDlgItemText(hWnd, ID_LOG_FILE, App.config.logFile);
+			SetDlgItemText(hWnd, ID_USERDB_SELECT, App.config.profileDb);
 			return 0;
+		case WM_CTLCOLORDLG:
+		case WM_CTLCOLORBTN:
+		case WM_CTLCOLORSTATIC:
+			return setBkProc(wParam);						   
 		case WM_COMMAND:
 			switch(LOWORD(wParam)) {
 				case ID_CONFIG_SAVE:
-					GetDlgItemText(hWnd, ID_HOSTNAME, 
-								  (LPTSTR) Config.hostname, 64);
-					Config.port = GetDlgItemInt(hWnd, ID_PORT, NULL, FALSE);
-					SendMessage(App.layout.hostnameLabel, WM_SETTEXT, 
-								0, (LPARAM) Config.hostname);
+					GetDlgItemText(hWnd, ID_HOSTNAME, App.config.hostname, 64);
+					App.config.port = GetDlgItemInt(hWnd, ID_PORT, NULL, FALSE);
+					App.config.maxChannels = GetDlgItemInt(hWnd, ID_CHANNELS, NULL, FALSE);  
 					saveConf();
 					MessageBox(hWnd, "Configuration saved. New settings "
 									 "will take effect upon restart.",
@@ -71,6 +77,20 @@ BOOL CALLBACK configProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 			return 0;
 		default:
 			return 0;
+	}
+}
+
+LRESULT CALLBACK licenseProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
+	switch(msg) {
+		case WM_INITDIALOG:
+			EnumChildWindows(hWnd, SetFontProc, (LPARAM) App.fonts.msSans8);
+			return 0;
+		case WM_CTLCOLORDLG:
+		case WM_CTLCOLORSTATIC:
+			return setBkProc(wParam);		 
+		case WM_CLOSE:
+			EndDialog(hWnd, LOWORD(wParam));
+		default: return 0;
 	}
 }
 
@@ -114,6 +134,10 @@ BOOL CALLBACK chanEditProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		case WM_INITDIALOG: 
 			EnumChildWindows(hWnd, SetFontProc, (WPARAM) App.fonts.msSans8);
 			return 0;
+		case WM_CTLCOLORDLG:
+		case WM_CTLCOLORBTN:
+		case WM_CTLCOLORSTATIC:
+			return setBkProc(wParam);
 		case WM_CLOSE: EndDialog(hWnd, LOWORD(wParam));
 		default: return 0;
 	}
@@ -131,6 +155,10 @@ BOOL CALLBACK userEditProc(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam) {
 		case WM_INITDIALOG: 
 			EnumChildWindows(hWnd, SetFontProc, (WPARAM) App.fonts.msSans8);
 			return 0;
+		case WM_CTLCOLORDLG:
+		case WM_CTLCOLORBTN:
+		case WM_CTLCOLORSTATIC:
+			return setBkProc(wParam);
 		case WM_CLOSE: EndDialog(hWnd, LOWORD(wParam));
 		default: return 0;
 	}
@@ -169,10 +197,26 @@ BOOL CALLBACK wndResize(HWND hWnd, UINT msg,
 	/* Divide the window into two tabs */
 	GetWindowRect(App.hWnd, &windowRect);
 
+	/* Server panel */
 	SetWindowPos(App.layout.serverBox, NULL, HMARGIN, VMARGIN,
 				 LEFTCOLW, SERVPANELH,
 				 SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOREDRAW);
-	
+	SetWindowPos(App.layout.hostnameLabel, NULL, 
+				 HMARGIN + PANELMARGIN, 
+				 2*VMARGIN + PANELMARGIN,
+				 120, 14,
+				 SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOREDRAW);
+ 	SetWindowPos(App.layout.portLabel, NULL, 
+				 HMARGIN + PANELMARGIN, 
+				 2*VMARGIN + PANELMARGIN + PANELMARGIN + 12,
+				 120, 12,
+				 SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOREDRAW);
+	SetWindowPos(App.layout.uptimeLabel, NULL, 
+				 HMARGIN + PANELMARGIN, 
+				 2*VMARGIN + PANELMARGIN + 2*PANELMARGIN + 24,
+				 120, 12,
+				 SWP_NOACTIVATE | SWP_NOZORDER | SWP_NOREDRAW);
+
 	/* Control panel */
 	SetWindowPos(App.layout.controlBox, NULL, CONTROLPANELX, CONTROLPANELY, 
 				 LEFTCOLW, CONTROLPANELH, 

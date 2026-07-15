@@ -30,6 +30,7 @@
 #define CONTROLSTATUS	 (HMENU)0x1017
 #define CONTROLRESTART	 (HMENU)0x1018
 #define CONTROLCONFIG	 (HMENU)0x1019
+#define PORTLABEL 		 (HMENU)0x101A
 
 #define NAMESTR 	    TEXT("WinIRC v0.1")
 #define CHANNELSTR 	    TEXT("Channels")
@@ -46,6 +47,7 @@ typedef struct uiLayout {
 	/* Server section */
 	HWND serverBox;
 	HWND hostnameLabel;
+	HWND portLabel;
 	HWND uptimeLabel;
 	
 	/* Channel section */

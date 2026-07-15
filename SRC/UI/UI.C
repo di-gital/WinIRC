@@ -67,14 +67,22 @@ LRESULT CALLBACK initUiLayout(HWND hWnd) {
 									  0, 0, 0, 0,
 									  hWnd, SERVERBOX, App.hInstance, NULL);
 
-	App.layout.hostnameLabel = CreateWindow("STATIC", "localhost",
+	App.layout.hostnameLabel = CreateWindow("STATIC", "Hostname:",
 									  WS_CHILD | WS_VISIBLE,
 									  0, 0, 0, 0,
 									  hWnd, HOSTNAMELABEL, App.hInstance, NULL);
+	App.layout.portLabel = CreateWindow("STATIC", "Port: 6667",
+									  WS_CHILD | WS_VISIBLE,
+									  0, 0, 0, 0,
+									  hWnd, PORTLABEL, App.hInstance, NULL);
+	App.layout.uptimeLabel = CreateWindow("STATIC", "Uptime: 0 hr, 0 min, 0 sec",
+									  WS_CHILD | WS_VISIBLE,
+									  0, 0, 0, 0,
+									  hWnd, UPTIMELABEL, App.hInstance, NULL);
 
 
 	/* Channel panel */
-	App.layout.channelLabel = CreateWindow("BUTTON", CHANNELSTR,
+	App.layout.channelLabel = CreateWindow("BUTTON", "Channels (0)",
 									  WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
 									  0, 0, 0, 0,
 									  hWnd, CHANNELLABEL, App.hInstance, NULL);
@@ -99,7 +107,7 @@ LRESULT CALLBACK initUiLayout(HWND hWnd) {
 									  hWnd, CHANNELDELETE, App.hInstance, NULL);
 
 	/* User panel */
-	App.layout.userLabel = CreateWindow("BUTTON", USERSTR,
+	App.layout.userLabel = CreateWindow("BUTTON", "Users (0)",
 									  WS_CHILD | WS_VISIBLE | BS_GROUPBOX,
 									  0, 0, 0, 0,
 									  hWnd, USERLABEL, App.hInstance, NULL);

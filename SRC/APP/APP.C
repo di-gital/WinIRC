@@ -4,6 +4,7 @@
 #include <Windows.h>
 #include <winsock.h>
 #include <stdlib.h>
+#include <stdio.h>
 
 #include "winirc.h"
 #include "app.h"
@@ -13,8 +14,6 @@
 #include "ui.h"
 
 extern Application App;
-extern AppConfig Config;
-
 
 /* Return the user corresponding to a string */
 IrcUser *findUserStr(char *name) {
@@ -245,12 +244,14 @@ int initSuccess() {
 
 /* Initialize the server. Return zero iff failure. */
 int initServer() {
+	static char host[128];
+	static char portlabel[32];
 	SOCKET ircSock;
 	SOCKADDR_IN sin;
 	WSADATA wsaData;
 	sin.sin_family = AF_INET;
 	sin.sin_addr.s_addr = INADDR_ANY; /* 0.0.0.0 */
-	sin.sin_port = htons(Config.port);
+	sin.sin_port = htons(App.config.port);
 
 	if(WSAStartup(MAKEWORD(1, 2), &wsaData) != 0) return FALSE; 
 
@@ -276,6 +277,14 @@ int initServer() {
 	App.q.back = App.q.front;
 
 	ZeroMemory(App.log.text, LOG_SIZE);
+	ZeroMemory(host, 128*sizeof(char));
+	ZeroMemory(portlabel, 32*sizeof(char));
+	sprintf(host, "Hostname: %s", App.config.hostname);
+	sprintf(portlabel, "Port: %d", App.config.port);
+	SendMessage(App.layout.hostnameLabel, WM_SETTEXT, 
+				(WPARAM) 0, (LPARAM) host);
+	SendMessage(App.layout.portLabel, WM_SETTEXT, 
+				(WPARAM) 0, (LPARAM) portlabel);
 	 
 	return initSuccess();
 }

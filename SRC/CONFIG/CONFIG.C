@@ -2,20 +2,21 @@
 #include <stdio.h>
 #include <wchar.h>
 
+#include "winirc.h"
 #include "config.h"
 
-extern AppConfig Config;
+extern Application App;
 
 BOOL loadConf(LPSTR file) {
-	strcpy(Config.file, file);
+	strcpy(App.config.file, file);
 
 	GetPrivateProfileString(TEXT("winirc"), TEXT("hostname"),
-	  						TEXT("localhost"), (LPTSTR) &(Config.hostname),
+	  						TEXT("localhost"), App.config.hostname,
 							64, file);
-	Config.port = (unsigned short) 
+	App.config.port = (unsigned short) 
 				  GetPrivateProfileInt(TEXT("winirc"), TEXT("port"),
 									   6667, file);
-	Config.maxChannels = GetPrivateProfileInt(TEXT("winirc"), 
+	App.config.maxChannels = GetPrivateProfileInt(TEXT("winirc"), 
 											  TEXT("max_channels"), 5, file); 
 
 	return TRUE;
@@ -25,24 +26,24 @@ BOOL saveConf() {
 	TCHAR buf[64];
 
 	WritePrivateProfileString(TEXT("winirc"), TEXT("hostname"),
-	  						 (LPCTSTR) &(Config.hostname), Config.file);
+	  						 (LPCTSTR) App.config.hostname, App.config.file);
 
-	sprintf(buf, "%u", Config.port);
+	sprintf(buf, "%u", App.config.port);
 	WritePrivateProfileString(TEXT("winirc"), TEXT("port"),
-								buf, Config.file);
+								buf, App.config.file);
 
-	sprintf(buf, "%d", Config.maxChannels);
+	sprintf(buf, "%d", App.config.maxChannels);
 	WritePrivateProfileString(TEXT("winirc"), TEXT("max_channels"),
-								buf, Config.file);
+								buf, App.config.file);
 	return TRUE;
 }
 
 void loadDefaultConf() {
-	strcpy(Config.hostname, "localhost");
-	Config.port = 6667;
-	Config.maxChannels = 5;
-	Config.logFile = "";
-	Config.profileDb = "";
+	strcpy(App.config.hostname, "localhost");
+	App.config.port = 6667;
+	App.config.maxChannels = 5;
+	App.config.logFile = "";
+	App.config.profileDb = "";
 }
 
 

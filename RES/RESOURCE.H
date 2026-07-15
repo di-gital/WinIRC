@@ -9,13 +9,16 @@
 #define IDR_WINIRC_LOG 0x601
 
 #define IDD_ABOUT 901
-#define ID_HELP_ABOUT 40002
+#define ID_HELP_LICENSE 902
+#define ID_HELP_ABOUT 903
 
 /* Options dialog */
 #define CONFIG_WIDTH  200
 #define CONFIG_HEIGHT 125
 #define OPTION_MARGIN 5
 #define OPTION_RIGHT 64
+
+#define IDD_LICENSE 0x1000
 
 #define IDD_CONFIG 0x2000
 #define ID_CONFIG_CANCEL 0x2001
